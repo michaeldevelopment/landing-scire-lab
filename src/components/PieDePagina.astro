@@ -1,6 +1,6 @@
 ---
 import Icono from "./Icono.astro";
-import { contacto, marca, portalResultados, sede } from "../datos";
+import { contacto, marca, portalResultados, ruta, sede } from "../datos";
 
 const anio = new Date().getFullYear();
 ---
@@ -83,7 +83,7 @@ const anio = new Date().getFullYear();
           </li>
           <li>
             <a
-              href="/privacidad"
+              href={ruta("privacidad")}
               class="transicion-scire hover:text-white"
             >
               Política de tratamiento de datos

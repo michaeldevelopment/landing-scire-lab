@@ -1,0 +1,41 @@
+name: Desplegar en GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Permite lanzarlo a mano desde la pestaña Actions.
+  workflow_dispatch:
+
+# Un despliegue a la vez. Si llegan varios push seguidos, se cancela el
+# anterior en vez de pelearse por el entorno de Pages.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  construir:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v7
+
+      - name: Instalar, construir y subir el sitio
+        uses: withastro/action@v6
+        # El gestor de paquetes se detecta por el lockfile (pnpm-lock.yaml).
+        # La version de Node sale de "engines" en package.json.
+
+  desplegar:
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

@@ -8,6 +8,24 @@
  * no haga la afirmacion. La lista viva esta en memoria/preguntas-abiertas.md.
  */
 
+/**
+ * Prefija una ruta interna con el `base` del sitio.
+ *
+ * Hace falta porque GitHub Pages publica el proyecto en un subdirectorio
+ * (/landing-scia-lab/), no en la raiz del dominio. Una ruta absoluta escrita a
+ * mano como "/video/adn-1.mp4" apuntaria fuera del sitio y daria 404.
+ *
+ * Usala para TODO lo interno: paginas, favicon, video, cualquier cosa de
+ * public/. No aplica a enlaces externos ni a los assets que importa Astro
+ * (esos ya salen con el prefijo puesto).
+ *
+ *   ruta("privacidad")       ->  /landing-scia-lab/privacidad
+ *   ruta("/video/adn-1.mp4") ->  /landing-scia-lab/video/adn-1.mp4
+ */
+export function ruta(camino = "") {
+  return `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${camino.replace(/^\//, "")}`;
+}
+
 export const sede = {
   direccion: "Av 0A #21-27, local 102",
   barrio: "Barrio Blanco",

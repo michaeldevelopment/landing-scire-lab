@@ -1,7 +1,7 @@
 ---
 import { Picture } from "astro:assets";
 import Icono from "./Icono.astro";
-import { ctaPrincipal } from "../datos";
+import { ctaPrincipal, ruta } from "../datos";
 
 import helice from "../assets/adn/1-helice.png";
 import anguloBajo from "../assets/adn/2-angulo-bajo.png";
@@ -62,7 +62,9 @@ const paradas = [
   },
 ];
 
-const clips = paradas.map((p) => p.clip);
+// Con el prefijo del sitio puesto: el script del cliente recibe las rutas ya
+// resueltas, porque ahi no hay acceso a la configuracion de Astro.
+const clips = paradas.map((p) => ruta(p.clip));
 ---
 
 <section

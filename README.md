@@ -17,6 +17,46 @@ pnpm video    # reoptimiza los clips de video-fuente/ a public/video/
 Sin dependencias de runtime para el scroll: no hay GSAP ni Lenis. El motor de
 scrub son unas 120 líneas dentro de `MundoScroll.astro`.
 
+## Despliegue en GitHub Pages
+
+Se publica en **https://michaeldevelopment.github.io/landing-scia-lab/** desde
+la rama `main`. Cada push dispara `.github/workflows/deploy.yml`, que construye
+con la acción oficial de Astro y publica el resultado.
+
+**Un paso manual, una sola vez:** en el repositorio, *Settings → Pages →
+Source*, elegir **GitHub Actions**. Sin eso el workflow construye pero no
+publica.
+
+### La trampa del `base`
+
+El sitio no vive en la raíz del dominio sino en `/landing-scia-lab/`. Eso está
+configurado en `astro.config.mjs` con `site` y `base`, y tiene una consecuencia
+que es fácil olvidar:
+
+> **Toda ruta interna tiene que llevar ese prefijo.** Una ruta escrita a mano
+> como `/video/adn-1.mp4` apuntaría fuera del sitio y daría 404.
+
+Para eso existe `ruta()` en `src/datos.ts`. Úsala para páginas, favicon, video
+y cualquier cosa de `public/`:
+
+```astro
+<a href={ruta("privacidad")}>…</a>
+<link rel="icon" href={ruta("favicon.svg")} />
+```
+
+No hace falta para enlaces externos ni para los assets que importa Astro
+(`src/assets/`), que ya salen prefijados solos.
+
+Si algún día el sitio pasa a un dominio propio, basta con quitar `base` y
+`ruta()` devuelve rutas normales sin tocar los componentes.
+
+### Lo que no se publica
+
+`video-fuente/` sí está versionado (unos 23 MB de originales a 2K) porque es la
+única copia de los renders: las URLs de Higgsfield caducan a las 24 o 48 horas.
+Pero **no se despliega**, porque está fuera de `public/`. Lo que viaja al sitio
+son los clips optimizados, unos 4.3 MB por formato.
+
 ## Por qué Astro 6 y no 7
 
 Astro 7 exige Node >=22.23.4 y la máquina de desarrollo tiene 22.20.0. Astro

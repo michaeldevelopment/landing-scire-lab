@@ -1,6 +1,6 @@
 ---
 import Icono from "./Icono.astro";
-import { contacto, ctaPrincipal } from "../datos";
+import { contacto, ctaPrincipal, ruta } from "../datos";
 ---
 
 {/* Privacidad. Va antes del CTA final a proposito: es una de las cuatro
@@ -23,7 +23,7 @@ import { contacto, ctaPrincipal } from "../datos";
       En Colombia el dato de salud es dato sensible. Scire trata los datos
       personales conforme a la Ley 1581 de 2012.
       <a
-        href="/privacidad"
+        href={ruta("privacidad")}
         class="transicion-scire font-semibold text-rojo-500 underline underline-offset-4 hover:text-rojo-600"
       >
         Ver la política de tratamiento de datos
