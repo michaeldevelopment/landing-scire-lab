@@ -1,0 +1,98 @@
+---
+import { Picture } from "astro:assets";
+import Icono from "./Icono.astro";
+
+import tomaDeMuestra from "../assets/fotos/toma-de-muestra.png";
+import procesamiento from "../assets/fotos/procesamiento.png";
+
+/*
+  Tres pasos, calcados del recorrido real de la muestra que describe
+  memoria/flujo-de-la-muestra.md: se toma, se procesa, se entrega el resultado.
+
+  Ninguno promete un tiempo de entrega: no esta confirmado, y varia segun si el
+  examen se procesa en Cucuta o se remite. Lo que si es cierto y sirve de
+  reductor de friccion es que se informa al agendar.
+
+  Las fotos son generadas con IA: no son la sede de Scire ni su personal. Ver
+  landing/README.md y memoria/preguntas-abiertas.md.
+*/
+
+const pasos = [
+  {
+    numero: "01",
+    icono: "whatsapp-logo",
+    titulo: "Agende y confirme la preparación",
+    cuerpo:
+      "Escriba por WhatsApp con el examen o la orden médica. Antes de que se desplace le confirmamos qué muestra se necesita, si requiere ayuno y cuándo estará el resultado.",
+  },
+  {
+    numero: "02",
+    icono: "flask",
+    titulo: "Se toma y se procesa la muestra",
+    cuerpo:
+      "La toma ocurre en la sede o en el lugar que usted indique. Ya en el laboratorio, la muestra se procesa y queda registrada en el sistema.",
+  },
+  {
+    numero: "03",
+    icono: "file-arrow-down",
+    titulo: "Consulte el resultado",
+    cuerpo:
+      "El resultado queda disponible en el portal del laboratorio, sin que tenga que volver a la sede a recogerlo.",
+  },
+];
+---
+
+<section id="como-funciona" class="bg-azul-50 px-4 py-24 sm:px-6 sm:py-32">
+  <div class="mx-auto max-w-6xl">
+    <div class="revelar mx-auto max-w-[680px]">
+      <p class="mb-4 text-xs font-semibold tracking-widest text-azul-500 uppercase">
+        Cómo funciona
+      </p>
+      <h2 class="titular-claro text-3xl font-semibold sm:text-4xl">
+        De la muestra al resultado, en tres pasos
+      </h2>
+    </div>
+
+    <ol class="mt-16 grid gap-4 md:grid-cols-3">
+      {
+        pasos.map((paso) => (
+          <li class="revelar flex flex-col rounded-2xl border border-gris-200 bg-white p-6">
+            <div class="flex items-center gap-3">
+              <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-rojo-500 font-mono text-sm font-semibold text-white">
+                {paso.numero}
+              </span>
+              <Icono nombre={paso.icono} class="size-6 shrink-0 text-azul-500" />
+            </div>
+
+            <h3 class="mt-6 text-xl font-semibold text-azul-700">
+              {paso.titulo}
+            </h3>
+            <p class="mt-3 grow text-base text-gris-600">{paso.cuerpo}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="revelar mt-4 grid gap-4 sm:grid-cols-2">
+      <Picture
+        src={tomaDeMuestra}
+        alt="Profesional de laboratorio tomando una muestra de sangre a un paciente sentado"
+        formats={["avif", "webp"]}
+        widths={[480, 768, 1024]}
+        sizes="(min-width: 640px) 50vw, 100vw"
+        loading="lazy"
+        class="aspect-[4/3] w-full rounded-2xl border border-gris-200 object-cover"
+      />
+
+      <Picture
+        src={procesamiento}
+        alt="Área de procesamiento del laboratorio con equipos de análisis y gradillas de tubos"
+        formats={["avif", "webp"]}
+        widths={[480, 768, 1024]}
+        sizes="(min-width: 640px) 50vw, 100vw"
+        loading="lazy"
+        class="aspect-[4/3] w-full rounded-2xl border border-gris-200 object-cover"
+      />
+    </div>
+  </div>
+</section>

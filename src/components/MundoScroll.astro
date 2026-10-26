@@ -1,0 +1,500 @@
+---
+import { Picture } from "astro:assets";
+import Icono from "./Icono.astro";
+import { ctaPrincipal } from "../datos";
+
+import helice from "../assets/adn/1-helice.png";
+import anguloBajo from "../assets/adn/2-angulo-bajo.png";
+import detalle from "../assets/adn/3-detalle.png";
+
+/*
+  Scroll world: el scroll arrastra el currentTime de un video pregrabado. La
+  camara se mueve de verdad; el scroll solo conduce el tiempo.
+
+  La mecanica esta portada de references/scrub-engine.js de la skill
+  scroll-world. Se porto en vez de montar el motor entero porque ese motor
+  construye su propia pagina (barra superior, nav, capa de copy numerada, rail
+  y particulas), y eso habria costado el h1 del heroe, el degradado del
+  titular, los iconos y el boton de WhatsApp. Lo que vale del motor es la
+  mecanica, y es lo que esta aqui:
+
+    1. Carga por Blob. Un Blob siempre es seekable. Servido por URL normal,
+       muchos hosts estaticos no responden peticiones de rango HTTP, y entonces
+       video.seekable queda en [0,0] y TODA busqueda se recorta al fotograma 0:
+       el video se ve congelado. Esta es la razon principal del cambio.
+    2. Coalescencia de seeks: nunca se pide un currentTime nuevo mientras el
+       decodificador sigue buscando. Sin esto un desliz rapido en el telefono
+       encola busquedas y congela el clip.
+    3. Cebado de iOS: Safari no pinta un fotograma buscado en un video muteado
+       que nunca se reprodujo. Se ceba con play/pause al primer gesto.
+    4. El keyframe se queda de poster hasta que el clip pinta su primer
+       fotograma, para que no haya un parpadeo en negro.
+    5. Crossfade en las costuras. Los clips fijaron su end_image contra el PNG,
+       y Seedance aterriza cerca pero no exacto, asi que el lado de salida de
+       cada costura tiene una deriva pequena que el crossfade cubre.
+
+  Cada parada tiene su propio clip: no hace falta concatenarlos.
+*/
+
+const paradas = [
+  {
+    etiqueta: "Laboratorio clínico en Cúcuta",
+    titulo: null,
+    cuerpo: null,
+    still: helice,
+    clip: "/video/adn-1",
+  },
+  {
+    etiqueta: "Una sola muestra",
+    titulo: "Lo que entra por la misma puerta",
+    cuerpo:
+      "Un hemograma y un panel genético empiezan igual: con una muestra bien tomada. Scire cubre las dos puntas del análisis clínico, así que el examen de rutina y el especializado no obligan a repartir el caso entre proveedores.",
+    still: anguloBajo,
+    clip: "/video/adn-2",
+  },
+  {
+    etiqueta: "Hasta el detalle",
+    titulo: "Y hasta dónde puede llegar",
+    cuerpo:
+      "Biología molecular por PCR multiplex, genética y genómica, tamizaje prenatal y huella del ADN. Es la parte del portafolio que no todos los laboratorios de la región resuelven en casa.",
+    still: detalle,
+    clip: "/video/adn-3",
+  },
+];
+
+const clips = paradas.map((p) => p.clip);
+---
+
+<section
+  id="recorrido"
+  data-mundo-scroll
+  data-clips={JSON.stringify(clips)}
+  class="relative bg-azul-900"
+>
+  {/*
+    Capa pegajosa. Dentro van el video y el texto: el texto NO scrollea, se
+    queda fijo y solo cambia de opacidad. Esa es la unica forma de que aparezca
+    y se desvanezca de verdad. Si el texto scrollea, para que no quede un hueco
+    sin nada en pantalla la curva de opacidad tiene que ser tan ancha que el
+    texto acaba viendose casi siempre: las dos cosas se contradicen.
+  */}
+  <div class="absolute inset-0">
+    <div class="sticky top-0 h-screen">
+      {/* El video se recorta aqui; el texto va fuera para que nunca se corte. */}
+      <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
+        {
+          paradas.map((parada, i) => (
+            <div
+              data-escena
+              class="absolute inset-0"
+              style={`opacity:${i === 0 ? 1 : 0}`}
+            >
+              <Picture
+                src={parada.still}
+                alt=""
+                formats={["avif", "webp"]}
+                widths={[640, 1024, 1536, 2048]}
+                sizes="100vw"
+                loading={i === 0 ? "eager" : "lazy"}
+                data-escena-still
+                class="absolute inset-0 h-full w-full object-cover"
+              />
+            </div>
+          ))
+        }
+
+        {/*
+          Velo plano, no degradado (LINEA-GRAFICA seccion 4). Sin el, el
+          contraste del texto depende del fotograma y deja de ser verificable.
+          Con publico de adultos mayores eso no es aceptable.
+        */}
+        <div class="absolute inset-0 z-30 bg-black/70"></div>
+      </div>
+
+      {/*
+        El texto, fijado. pt-28 lo baja para que el epigrafe no choque con la
+        pildora flotante del encabezado.
+      */}
+      <div class="absolute inset-0 z-40">
+        {
+          paradas.map((parada, i) => (
+            <div
+              data-copia
+              class="absolute inset-0 flex items-center px-4 pt-24 pb-8 sm:px-6 sm:pt-28 sm:pb-12"
+              style={`opacity:${i === 0 ? 1 : 0}`}
+            >
+              <div class="mx-auto w-full max-w-[680px]">
+                <p class="mb-4 text-xs font-semibold tracking-widest text-white/75 uppercase">
+                  {parada.etiqueta}
+                </p>
+
+                {i === 0 ? (
+                  <>
+                    <h1 class="titular-heroe text-4xl font-bold sm:text-5xl">
+                      Del hemograma al panel genético,<br />sin cambiar de
+                      laboratorio
+                    </h1>
+
+                    <p class="mt-6 text-lg text-white/90">
+                      Scire resuelve el análisis clínico de rutina y también lo
+                      especializado: biología molecular, genética y genómica,
+                      tamizaje prenatal y huella del ADN. Todo desde una sede en
+                      Cúcuta.
+                    </p>
+
+                    <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+                      <a
+                        href={ctaPrincipal.href}
+                        rel="noopener"
+                        class="transicion-scire flex shrink-0 items-center justify-center gap-2 rounded-full bg-rojo-500 px-3 py-2 text-base font-semibold whitespace-nowrap text-white hover:bg-rojo-600 active:scale-98 sm:w-max"
+                      >
+                        <Icono nombre="whatsapp-logo" class="size-5 shrink-0" />
+                        {ctaPrincipal.texto}
+                      </a>
+                      <p class="text-sm text-white/80">
+                        Le confirmamos la preparación y qué muestra hace falta
+                        antes de que se desplace.
+                      </p>
+                    </div>
+
+                    <p class="mt-12 flex items-center gap-2 text-sm text-white/85">
+                      <Icono nombre="flask" class="size-4 shrink-0" />
+                      Atención a pacientes particulares y a instituciones con
+                      convenio.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <h2 class="titular-heroe text-3xl font-semibold sm:text-4xl">
+                      {parada.titulo}
+                    </h2>
+                    <p class="mt-6 text-lg text-white/90">{parada.cuerpo}</p>
+                  </>
+                )}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  {/*
+    Espaciadores. Solo existen para dar distancia de scroll: una pantalla por
+    parada. El contenido visible vive en la capa pegajosa de arriba.
+  */}
+  <div class="relative">
+    {paradas.map(() => <div data-parada class="h-screen" aria-hidden="true" />)}
+  </div>
+</section>
+
+<style>
+  [data-escena] video {
+    opacity: 0;
+    transition: opacity 300ms linear;
+  }
+
+  [data-escena].tiene-clip video {
+    opacity: 1;
+  }
+
+  [data-escena].tiene-clip [data-escena-still] {
+    opacity: 0;
+  }
+
+  /* La opacidad y el desplazamiento los gobierna el scroll, cuadro a cuadro.
+     will-change evita que cada cambio dispare un repintado de capa. */
+  [data-copia] {
+    will-change: opacity, transform;
+  }
+
+  /* Con movimiento reducido no hay desplazamiento ni desvanecido: el texto de
+     la parada activa se muestra y los demas no. La opacidad la sigue poniendo
+     el script, porque las copias estan apiladas y solo una puede estar
+     visible; forzarlas todas a 1 las superpondria. */
+  @media (prefers-reduced-motion: reduce) {
+    [data-copia] {
+      transform: none !important;
+      will-change: auto;
+    }
+  }
+</style>
+
+<script>
+  const seccion = document.querySelector<HTMLElement>("[data-mundo-scroll]");
+
+  if (seccion) {
+    const clips: string[] = JSON.parse(seccion.dataset.clips || "[]");
+    const escenas = [...seccion.querySelectorAll<HTMLElement>("[data-escena]")];
+    const bloques = [...seccion.querySelectorAll<HTMLElement>("[data-parada]")];
+    const copias = [...seccion.querySelectorAll<HTMLElement>("[data-copia]")];
+
+    const reducido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // El tipo de puntero no cambia a mitad de sesion; el ancho si, asi que ese
+    // se lee en vivo para que un cambio de tamano conmute el comportamiento.
+    const grueso = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+    const estrecho = window.matchMedia("(max-width: 860px)");
+    const esMovil = () => grueso || estrecho.matches;
+
+    const CROSSFADE = 0.12; // en alturas de viewport
+
+    /*
+      Entrada y salida del texto, medidas sobre el avance dentro del tramo de
+      scroll de cada parada (0 = empieza, 1 = termina). Como el texto esta
+      fijado, la opacidad no depende de donde este en pantalla.
+
+      d = distancia al centro del tramo, 0 en el centro y 1 en los extremos.
+      Opacidad plena mientras d <= MESETA, y cero en d = MESETA + CAIDA. Que
+      ese cero caiga MAS ALLA de 1 es deliberado: hace que el texto saliente y
+      el entrante se crucen a media opacidad en la frontera, en vez de dejar un
+      instante sin nada en pantalla.
+    */
+    const MESETA = 0.35;
+    const CAIDA = 0.95;
+    const DESLIZ = 1.4; // vh que el texto se desplaza mientras aparece
+
+    // El heroe es el unico caso aparte: tiene que estar legible al cargar la
+    // pagina, asi que arranca opaco en vez de aparecer.
+    const HEROE_PLENO = 0.15; // hasta aqui no empieza a irse
+    const HEROE_FIN = 0.95; // y aqui ya se fue del todo
+
+    const clamp = (x: number, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+    const suave = (x: number) => {
+      x = clamp(x);
+      return x * x * (3 - 2 * x);
+    };
+
+    type Escena = {
+      el: HTMLElement;
+      bloque: HTMLElement;
+      copia: HTMLElement;
+      video: HTMLVideoElement | null;
+      cargando: boolean;
+      lista: boolean;
+      cur: number;
+      objetivo: number;
+      visible: boolean;
+      inicio: number;
+      fin: number;
+    };
+
+    const estado: Escena[] = escenas.map((el, i) => ({
+      el,
+      bloque: bloques[i],
+      copia: copias[i],
+      video: null,
+      cargando: false,
+      lista: false,
+      cur: 0,
+      objetivo: 0,
+      visible: i === 0,
+      inicio: 0,
+      fin: 0,
+    }));
+
+    // Un solo formato por navegador: con carga por Blob no sirve <source>.
+    const sonda = document.createElement("video");
+    const extension = sonda.canPlayType('video/webm; codecs="vp9"')
+      ? "webm"
+      : "mp4";
+
+    let gestoListo = false;
+
+    function cebar(v: HTMLVideoElement | null) {
+      if (!esMovil() || !v) return;
+      try {
+        const p = v.play();
+        if (p && p.then) {
+          p.then(() => {
+            try {
+              v.pause();
+            } catch {}
+          }).catch(() => {});
+        }
+      } catch {}
+    }
+
+    function cargar(s: Escena, base: string) {
+      // Con movimiento reducido no se descarga ningun clip: los keyframes se
+      // quedan y solo se funden entre si. Cero coste de decodificacion.
+      if (reducido || s.cargando || !base) return;
+      s.cargando = true;
+
+      fetch(`${base}.${extension}`)
+        .then((r) => (r.ok ? r.blob() : Promise.reject(new Error("404"))))
+        .then((blob) => {
+          const v = document.createElement("video");
+          v.muted = true;
+          v.playsInline = true;
+          v.preload = "auto";
+          v.setAttribute("muted", "");
+          v.setAttribute("playsinline", "");
+          v.className = "absolute inset-0 h-full w-full object-cover";
+          v.src = URL.createObjectURL(blob);
+
+          v.addEventListener("loadedmetadata", () => {
+            s.lista = true;
+            leer();
+          });
+          // El keyframe se retira solo cuando el video pinta un fotograma de
+          // verdad: en iOS un video muteado que nunca se reprodujo se queda en
+          // blanco, y ocultar el poster antes dejaria la escena vacia.
+          v.addEventListener("seeked", () => s.el.classList.add("tiene-clip"), {
+            once: true,
+          });
+          v.addEventListener("loadeddata", () => {
+            try {
+              v.pause();
+            } catch {}
+            if (gestoListo) cebar(v);
+          });
+
+          s.el.appendChild(v);
+          s.video = v;
+        })
+        .catch(() => {
+          s.cargando = false;
+        });
+    }
+
+    function medir() {
+      const vh = window.innerHeight;
+      for (const s of estado) {
+        const caja = s.bloque.getBoundingClientRect();
+        s.inicio = caja.top + window.scrollY;
+        s.fin = s.inicio + caja.height;
+      }
+      return vh;
+    }
+
+    let vh = medir();
+
+    function leer() {
+      const y = window.scrollY;
+      const banda = CROSSFADE * vh;
+
+      let activo = 0;
+      estado.forEach((s, i) => {
+        if (y >= s.inicio) activo = i;
+      });
+
+      estado.forEach((s, i) => {
+        if (y > s.inicio - 1.6 * vh && y < s.fin + 1.6 * vh) {
+          cargar(s, clips[i]);
+        }
+
+        s.objetivo = clamp((y - s.inicio) / (s.fin - s.inicio));
+
+        let fuera = 0;
+        if (y < s.inicio) fuera = s.inicio - y;
+        else if (y > s.fin) fuera = y - s.fin;
+
+        const opacidad = suave(1 - fuera / banda);
+        s.el.style.opacity = String(opacidad);
+        s.visible = opacidad > 0.001;
+        s.el.style.zIndex = i === activo ? "20" : String(10 + Math.round(opacidad * 5));
+
+        // Avance dentro del tramo, SIN recortar: que pueda salirse de [0,1] es
+        // lo que permite que el texto entrante ya este subiendo cuando el
+        // saliente todavia no se ha ido.
+        const avance = (y - s.inicio) / (s.fin - s.inicio);
+
+        let opCopia: number;
+        if (i === 0) {
+          opCopia = suave(
+            clamp((HEROE_FIN - avance) / (HEROE_FIN - HEROE_PLENO)),
+          );
+        } else {
+          const d = Math.abs(avance - 0.5) * 2;
+          opCopia = suave(clamp(1 - (d - MESETA) / CAIDA));
+        }
+        // Sin movimiento, un corte limpio: solo la parada activa se ve.
+        if (reducido) opCopia = avance >= 0 && avance < 1 ? 1 : 0;
+
+        s.copia.style.opacity = String(opCopia);
+        // Desplazamiento leve en el sentido del scroll: entra desde abajo y
+        // sale hacia arriba, sin moverse mientras esta plenamente visible.
+        s.copia.style.transform = reducido
+          ? "none"
+          : `translateY(${((0.5 - clamp(avance)) * DESLIZ).toFixed(2)}vh)`;
+        // Un CTA desvanecido no debe poder pulsarse.
+        s.copia.style.pointerEvents = opCopia > 0.5 ? "auto" : "none";
+      });
+    }
+
+    function bucle() {
+      // Paso de busqueda mas grueso en telefono: menos decodificaciones.
+      const eps = esMovil() ? 0.02 : 0.008;
+
+      for (const s of estado) {
+        if (!s.video || !s.lista) continue;
+        // Coalescencia: nunca encolar una busqueda mientras el decodificador
+        // sigue resolviendo la anterior. cur sigue interpolando, asi que al
+        // quedar libre salta directo al objetivo mas reciente.
+        if (s.video.seeking) continue;
+        if (!s.visible && Math.abs(s.cur - s.objetivo) < 0.002) continue;
+
+        s.cur += (s.objetivo - s.cur) * (reducido ? 1 : 0.18);
+        const duracion = s.video.duration || 1;
+        const t = clamp(s.cur, 0, 0.999) * duracion;
+        if (Math.abs(s.video.currentTime - t) > eps) {
+          try {
+            s.video.currentTime = t;
+          } catch {}
+        }
+      }
+
+      requestAnimationFrame(bucle);
+    }
+
+    function primerGesto() {
+      if (gestoListo) return;
+      gestoListo = true;
+      for (const s of estado) cebar(s.video);
+    }
+
+    window.addEventListener("pointerdown", primerGesto, {
+      once: true,
+      passive: true,
+    });
+    window.addEventListener("touchstart", primerGesto, {
+      once: true,
+      passive: true,
+    });
+
+    // Scroll throttleado por requestAnimationFrame, nunca un listener suelto.
+    let pendiente = false;
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (pendiente) return;
+        pendiente = true;
+        requestAnimationFrame(() => {
+          leer();
+          pendiente = false;
+        });
+      },
+      { passive: true },
+    );
+
+    // En telefono, mostrar u ocultar la barra de URL dispara un resize de solo
+    // altura. Remedir ahi provoca un salto de scroll, asi que se ignora.
+    let anchoMedido = window.innerWidth;
+    window.addEventListener("resize", () => {
+      if (grueso && window.innerWidth === anchoMedido) return;
+      anchoMedido = window.innerWidth;
+      vh = medir();
+      leer();
+    });
+
+    window.addEventListener("orientationchange", () => {
+      window.setTimeout(() => {
+        vh = medir();
+        leer();
+      }, 120);
+    });
+
+    leer();
+    if (!reducido) requestAnimationFrame(bucle);
+  }
+</script>

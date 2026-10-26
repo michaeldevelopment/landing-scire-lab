@@ -1,0 +1,58 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Encabezado from "../components/Encabezado.astro";
+import PieDePagina from "../components/PieDePagina.astro";
+import Icono from "../components/Icono.astro";
+import { ctaPrincipal, portalResultados } from "../datos";
+---
+
+<Layout
+  titulo="Página no encontrada | Scire Clinical Diagnosis"
+  descripcion="La página que busca no existe. Vuelva al inicio o consulte sus resultados en el portal del laboratorio."
+>
+  <Encabezado />
+
+  <main id="contenido" class="bg-white px-4 pt-32 pb-24 sm:px-6">
+    <div class="mx-auto max-w-[680px]">
+      <p class="font-mono text-base font-semibold text-azul-500">404</p>
+      <h1 class="titular-claro mt-4 text-4xl font-bold sm:text-5xl">
+        Esta página no existe
+      </h1>
+      <p class="mt-6 text-lg text-gris-600">
+        Puede que el enlace esté roto o que la página haya cambiado de
+        dirección. Si lo que busca es su resultado, se consulta en el portal del
+        laboratorio.
+      </p>
+
+      <div class="mt-10 flex flex-col gap-3 sm:flex-row">
+        <a
+          href="/"
+          class="transicion-scire flex w-max items-center gap-2 rounded-full bg-rojo-500 px-3 py-2 text-base font-semibold text-white hover:bg-rojo-600 active:scale-98"
+        >
+          Volver al inicio
+        </a>
+        <a
+          href={portalResultados}
+          rel="noopener"
+          class="transicion-scire flex w-max items-center gap-2 rounded-lg border border-azul-500 px-3 py-2 text-base font-semibold text-azul-600 hover:bg-azul-50 active:scale-98"
+        >
+          <Icono nombre="file-arrow-down" class="size-5 shrink-0" />
+          Consultar resultados
+        </a>
+      </div>
+
+      <p class="mt-12 text-sm text-gris-500">
+        ¿Necesita agendar una toma de muestra?
+        <a
+          href={ctaPrincipal.href}
+          rel="noopener"
+          class="transicion-scire font-semibold text-rojo-500 underline underline-offset-4 hover:text-rojo-600"
+        >
+          Escríbanos por WhatsApp
+        </a>
+      </p>
+    </div>
+  </main>
+
+  <PieDePagina />
+</Layout>

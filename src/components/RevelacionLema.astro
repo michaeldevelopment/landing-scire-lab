@@ -1,0 +1,89 @@
+---
+import { Picture } from "astro:assets";
+import gota from "../assets/adn/4-gota.png";
+
+/*
+  Seccion de lema obligatoria (B11). Las palabras pasan de apagadas a plenas
+  una por una, en orden de lectura, al cruzar la linea de disparo.
+
+  El fondo recupera el keyframe de la gota, que quedo huerfano al cancelar el
+  tercer clip. Encaja: la gota es el isotipo de la marca y el cierre natural
+  del recorrido de la muestra.
+*/
+
+const lineas = [
+  "La muestra es el centro de todo lo que hacemos.",
+  "Desde que se toma hasta que usted lee el resultado.",
+];
+---
+
+<section class="relative isolate overflow-hidden bg-white px-4 py-24 sm:px-6 sm:py-32">
+  <Picture
+    src={gota}
+    alt=""
+    formats={["avif", "webp"]}
+    widths={[640, 1024, 1536]}
+    sizes="100vw"
+    loading="lazy"
+    class="absolute inset-0 -z-10 h-full w-full object-cover opacity-10"
+  />
+
+  <p
+    data-lema
+    class="mx-auto max-w-[680px] text-4xl leading-tight font-semibold sm:text-5xl"
+  >
+    {
+      lineas.map((linea, l) => (
+        <span class="block">
+          {linea.split(" ").map((palabra) => (
+            <span
+              data-palabra
+              class="text-gris-900/30 transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]"
+            >
+              {palabra}{" "}
+            </span>
+          ))}
+          {l === 0 && <span class="sr-only"> </span>}
+        </span>
+      ))
+    }
+  </p>
+</section>
+
+<script>
+  const lema = document.querySelector<HTMLElement>("[data-lema]");
+
+  if (lema) {
+    const palabras = [...lema.querySelectorAll<HTMLElement>("[data-palabra]")];
+    const encendida = "text-gris-900";
+    const apagada = "text-gris-900/30";
+    const reducido = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const encender = (el: HTMLElement) => {
+      el.classList.remove(apagada);
+      el.classList.add(encendida);
+    };
+
+    if (reducido.matches) {
+      palabras.forEach(encender);
+    } else {
+      // Un observador por palabra. Se activan de a una al cruzar la linea de
+      // disparo, nunca el bloque entero de golpe.
+      const observador = new IntersectionObserver(
+        (entradas) => {
+          for (const entrada of entradas) {
+            if (entrada.isIntersecting) {
+              const el = entrada.target as HTMLElement;
+              const indice = palabras.indexOf(el);
+              window.setTimeout(() => encender(el), indice * 45);
+              observador.unobserve(el);
+            }
+          }
+        },
+        { rootMargin: "0px 0px -35% 0px", threshold: 0.5 },
+      );
+
+      for (const palabra of palabras) observador.observe(palabra);
+    }
+  }
+</script>

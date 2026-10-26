@@ -1,0 +1,123 @@
+---
+import Icono from "./Icono.astro";
+import { sede } from "../datos";
+
+/*
+  El FAQ va alto en la pagina a proposito: resuelve las cuatro preguntas que
+  hoy llegan por WhatsApp y consumen atencion humana (precio, ayuno, tiempo de
+  entrega, como recibo el resultado).
+
+  Ninguna respuesta inventa un dato. Donde el valor no esta confirmado, la
+  respuesta dice con franqueza que se resuelve al agendar, que es como opera el
+  laboratorio de verdad.
+
+  Solo las respuestas que de verdad responden entran en el schema de FAQ. Las
+  que remiten a una conversacion quedan fuera: marcar eso como respuesta
+  autorizada seria presentar un aplazamiento como si fuera un dato.
+*/
+
+const preguntas = [
+  {
+    p: "¿Qué exámenes hacen?",
+    r: "Análisis clínico de rutina en cinco áreas: bioquímica, hematología y coagulación, inmunología y hormonas, microbiología, y uroanálisis y microscopía. Además biología molecular, genética y genómica, tamizaje prenatal, huella del ADN y paternidad, y toma de muestras domiciliarias.",
+    cerrada: true,
+  },
+  {
+    p: "¿Cuánto cuesta un examen?",
+    r: "El valor cambia según el examen, y algunos especializados se remiten fuera de Cúcuta. Escríbanos por WhatsApp con el nombre del examen o con la foto de la orden médica y le pasamos el valor exacto del suyo.",
+    cerrada: false,
+  },
+  {
+    p: "¿Cuándo está el resultado y cómo lo recibo?",
+    r: "El resultado se consulta en el portal del laboratorio, sin que tenga que volver a la sede a recogerlo. La fecha depende del examen, y se la confirmamos al momento de agendar.",
+    cerrada: true,
+  },
+  {
+    p: "¿Tengo que estar en ayunas?",
+    r: "Depende del examen: algunos lo requieren y otros no. Cuando agende le decimos exactamente qué preparación necesita, para que no se desplace en vano.",
+    cerrada: false,
+  },
+  {
+    p: "¿Pueden ir a mi casa a tomar la muestra?",
+    r: "Sí. En la toma domiciliaria, personal asistencial se desplaza al lugar que usted indique. Escríbanos con la dirección y le confirmamos si llegamos hasta ese punto.",
+    cerrada: true,
+  },
+  {
+    p: "¿Hacen pruebas de paternidad?",
+    r: "Sí, en varias modalidades según quién pueda participar: padre, madre e hijo; padre e hijo sin la madre; abuelismo, con los abuelos paternos cuando el padre no está; y a partir de restos óseos.",
+    cerrada: true,
+  },
+  {
+    p: "¿Hacen paneles genéticos de riesgo oncológico?",
+    r: "Sí. CentoCancer Panel sobre 31 genes, panel BRCA1 y BRCA2, y Oncotype de mama y de colon.",
+    cerrada: true,
+  },
+  {
+    p: "¿Hacen tamizaje prenatal?",
+    r: "Sí, tamizaje de primer trimestre con PAPP-A y β-hCG libre entre las semanas 9 y 13, combinado con ecografía de pliegue nucal y hueso nasal.",
+    cerrada: true,
+  },
+  {
+    p: "¿Trabajan con consultorios, clínicas y empresas?",
+    r: "Sí, por convenio. La institución toma la muestra en su propio sitio y un domiciliario de Scire la recoge y la transporta en cava hasta el laboratorio.",
+    cerrada: true,
+  },
+  {
+    p: "¿Dónde queda el laboratorio?",
+    r: `${sede.direccion}, ${sede.barrio}, ${sede.ciudad}, ${sede.departamento}. Es la sede única del laboratorio.`,
+    cerrada: true,
+  },
+  {
+    p: "¿Qué datos personales me piden?",
+    r: "Para agendar, su nombre, un contacto y el motivo de la consulta. No pedimos historia clínica por WhatsApp ni por correo, y los resultados no se envían por esos canales: se consultan en el portal. Scire trata los datos conforme a la Ley 1581 de 2012.",
+    cerrada: true,
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: preguntas
+    .filter((item) => item.cerrada)
+    .map((item) => ({
+      "@type": "Question",
+      name: item.p,
+      acceptedAnswer: { "@type": "Answer", text: item.r },
+    })),
+};
+---
+
+<section id="preguntas" class="bg-white px-4 py-24 sm:px-6 sm:py-32">
+  <div class="mx-auto max-w-3xl">
+    <div class="revelar">
+      <p class="mb-4 text-xs font-semibold tracking-widest text-azul-500 uppercase">
+        Preguntas
+      </p>
+      <h2 class="titular-claro text-3xl font-semibold sm:text-4xl">
+        Lo que la gente pregunta antes de agendar
+      </h2>
+    </div>
+
+    <div class="revelar mt-12 flex flex-col gap-3">
+      {
+        preguntas.map((item) => (
+          <details
+            name="faq"
+            class="group rounded-2xl border border-gris-200 bg-azul-50 open:bg-white"
+          >
+            <summary class="transicion-scire flex cursor-pointer list-none items-center justify-between gap-4 p-6 text-base font-semibold text-azul-700 hover:text-azul-600">
+              {item.p}
+              <Icono
+                nombre="caret-down"
+                class="size-5 shrink-0 text-azul-500 transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-open:rotate-180"
+              />
+            </summary>
+            <p class="px-6 pb-6 text-base text-gris-600">{item.r}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />

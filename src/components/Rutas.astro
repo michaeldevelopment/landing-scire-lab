@@ -1,0 +1,103 @@
+---
+import { Picture } from "astro:assets";
+import Icono from "./Icono.astro";
+import { sede } from "../datos";
+
+import recepcion from "../assets/fotos/recepcion.png";
+import tomaDomiciliaria from "../assets/fotos/toma-domiciliaria.png";
+
+/*
+  Las tres rutas de entrada de memoria/flujo-de-la-muestra.md.
+
+  Cuidado con el vocabulario, que el cliente distingue: "toma domiciliaria" es
+  que un profesional vaya a extraer la muestra; "domiciliario" es la persona
+  que recoge muestras ya tomadas y las transporta en cava. No son lo mismo.
+
+  No se publica horario ni cobertura del domiciliario: ninguno esta confirmado.
+*/
+---
+
+<section id="rutas" class="bg-white px-4 py-24 sm:px-6 sm:py-32">
+  <div class="mx-auto max-w-6xl">
+    <div class="revelar mx-auto max-w-[680px]">
+      <p class="mb-4 text-xs font-semibold tracking-widest text-azul-500 uppercase">
+        Dónde se toma la muestra
+      </p>
+      <h2 class="titular-claro text-3xl font-semibold sm:text-4xl">
+        Tres rutas, según le quede mejor
+      </h2>
+    </div>
+
+    <div class="mt-16 grid gap-4 lg:grid-cols-2">
+      <article class="revelar overflow-hidden rounded-2xl border border-gris-200 bg-azul-50">
+        <Picture
+          src={recepcion}
+          alt="Recepción de un laboratorio clínico, una auxiliar atiende a una paciente mayor en el mesón"
+          formats={["avif", "webp"]}
+          widths={[480, 768, 1024]}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          loading="lazy"
+          class="aspect-[4/3] w-full object-cover"
+        />
+        <div class="p-6">
+          <div class="flex items-center gap-3">
+            <Icono nombre="house" class="size-6 shrink-0 text-azul-500" />
+            <h3 class="text-xl font-semibold text-azul-700">En la sede</h3>
+          </div>
+          <p class="mt-3 text-base text-gris-600">
+            Usted llega a la sede y le toman la muestra allí. Es la ruta más
+            directa y la que permite resolver dudas en el momento.
+          </p>
+          <p class="mt-4 flex items-start gap-2 text-sm text-gris-500">
+            <Icono nombre="map-pin" class="mt-0.5 size-4 shrink-0" />
+            <span>
+              {sede.direccion}, {sede.barrio}, {sede.ciudad}.
+            </span>
+          </p>
+        </div>
+      </article>
+
+      <article class="revelar overflow-hidden rounded-2xl border border-gris-200 bg-azul-50">
+        <Picture
+          src={tomaDomiciliaria}
+          alt="Profesional de laboratorio con una cava de transporte de muestras en la puerta de una casa"
+          formats={["avif", "webp"]}
+          widths={[480, 768, 1024]}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          loading="lazy"
+          class="aspect-[4/3] w-full object-cover"
+        />
+        <div class="p-6">
+          <div class="flex items-center gap-3">
+            <Icono nombre="drop" class="size-6 shrink-0 text-azul-500" />
+            <h3 class="text-xl font-semibold text-azul-700">
+              Toma domiciliaria
+            </h3>
+          </div>
+          <p class="mt-3 text-base text-gris-600">
+            Personal asistencial se desplaza al lugar que usted indique y toma
+            la muestra allí. Escríbanos con su dirección y le confirmamos si
+            llegamos hasta ese punto.
+          </p>
+        </div>
+      </article>
+    </div>
+
+    <article
+      class="revelar mt-4 rounded-2xl border border-gris-200 bg-white p-6 sm:p-8"
+    >
+      <div class="flex items-center gap-3">
+        <Icono nombre="buildings" class="size-6 shrink-0 text-azul-500" />
+        <h3 class="text-xl font-semibold text-azul-700">
+          Desde una institución con convenio
+        </h3>
+      </div>
+      <p class="mt-3 max-w-[680px] text-base text-gris-600">
+        Si la muestra se toma en un consultorio, una clínica o una empresa con
+        convenio, un domiciliario de Scire la recoge y la transporta en cava
+        hasta el laboratorio. Esta ruta es para instituciones, no para
+        particulares.
+      </p>
+    </article>
+  </div>
+</section>

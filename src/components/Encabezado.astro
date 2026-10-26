@@ -1,0 +1,56 @@
+---
+import Icono from "./Icono.astro";
+import { ctaPrincipal, portalResultados } from "../datos";
+---
+
+{/*
+  Pildora flotante (B7). No lleva menu desplegable a proposito: esta es una
+  landing de una sola accion y un menu de navegacion competiria con el CTA.
+  Solo hay dos destinos, asi que caben en la pildora sin hamburguesa.
+
+  "Resultados" va como enlace de texto, nunca como boton: memoria exige que
+  este visible en todas las paginas, pero la skill prohibe un segundo CTA
+  compitiendo sobre el pliegue. La jerarquia resuelve la tension.
+*/}
+<header class="fixed inset-x-0 top-0 z-40 px-4">
+  <nav
+    aria-label="Principal"
+    class="mx-auto mt-6 flex w-max max-w-full items-center gap-3 rounded-full border border-white/15 bg-black/40 px-3 py-2 backdrop-blur-xl sm:gap-4"
+  >
+    <a
+      href="/"
+      aria-current="page"
+      class="transicion-scire flex items-center gap-2 rounded-full pl-2 hover:opacity-80"
+    >
+      <Icono nombre="drop" class="size-5 shrink-0 text-rojo-400" />
+      <span class="flex flex-col leading-none">
+        <span class="text-base font-bold tracking-tight text-white">Scire</span>
+        <span
+          class="hidden text-[0.5rem] font-semibold tracking-widest text-white/60 uppercase sm:block"
+        >
+          Clinical Diagnosis
+        </span>
+      </span>
+    </a>
+
+    <span class="h-6 w-px bg-white/15" aria-hidden="true"></span>
+
+    <a
+      href={portalResultados}
+      rel="noopener"
+      class="transicion-scire flex items-center gap-1.5 rounded-lg px-1 py-1 text-sm font-semibold text-white/80 hover:text-white"
+    >
+      <Icono nombre="file-arrow-down" class="size-4 shrink-0" />
+      Resultados
+    </a>
+
+    <a
+      href={ctaPrincipal.href}
+      rel="noopener"
+      class="transicion-scire flex items-center gap-1.5 rounded-full bg-rojo-500 px-3 py-2 text-sm font-semibold text-white hover:bg-rojo-600 active:scale-98"
+    >
+      <Icono nombre="whatsapp-logo" class="size-4 shrink-0" />
+      Agendar
+    </a>
+  </nav>
+</header>

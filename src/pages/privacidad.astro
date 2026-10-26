@@ -1,0 +1,91 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Encabezado from "../components/Encabezado.astro";
+import PieDePagina from "../components/PieDePagina.astro";
+import { contacto, marca, sede } from "../datos";
+
+/*
+  Borrador. Existe para que el enlace del pie no quede muerto y para declarar
+  que datos recoge esta pagina. NO es la politica definitiva: el texto legal lo
+  redacta el cliente o su asesor. Ver memoria/preguntas-abiertas.md, donde esta
+  anotado si existe ya una politica redactada.
+*/
+---
+
+<Layout
+  titulo="Política de tratamiento de datos | Scire Clinical Diagnosis"
+  descripcion="Cómo trata Scire Clinical Diagnosis los datos personales recogidos en esta página, conforme a la Ley 1581 de 2012."
+>
+  <Encabezado />
+
+  <main id="contenido" class="bg-white px-4 pt-32 pb-24 sm:px-6">
+    <article class="mx-auto max-w-[680px]">
+      <p
+        class="rounded-2xl border border-gris-200 bg-azul-50 p-6 text-base text-gris-600"
+      >
+        <strong class="font-semibold text-azul-700">Borrador.</strong> Este texto
+        está pendiente de revisión por el cliente y su asesor legal. No es la
+        política definitiva de {marca.nombre}.
+      </p>
+
+      <h1 class="titular-claro mt-12 text-4xl font-bold">
+        Política de tratamiento de datos
+      </h1>
+
+      <h2 class="mt-12 text-xl font-semibold text-azul-700">
+        Quién es el responsable
+      </h2>
+      <p class="mt-3 text-base text-gris-600">
+        {marca.nombre} S.A.S., con sede en {sede.direccion}, {sede.barrio},
+        {sede.ciudad}, {sede.departamento}, {sede.pais}. Contacto para asuntos de
+        datos personales: <a
+          href={`mailto:${contacto.correo}`}
+          class="transicion-scire font-semibold text-rojo-500 underline underline-offset-4 hover:text-rojo-600"
+          >{contacto.correo}</a
+        >.
+      </p>
+
+      <h2 class="mt-12 text-xl font-semibold text-azul-700">
+        Qué datos recoge esta página
+      </h2>
+      <p class="mt-3 text-base text-gris-600">
+        Esta página no tiene formularios. El contacto ocurre por WhatsApp o por
+        correo, y en esa conversación se piden únicamente el nombre, un dato de
+        contacto y el motivo de la consulta, con el fin de agendar una toma de
+        muestra y entregar información comercial.
+      </p>
+      <p class="mt-3 text-base text-gris-600">
+        No se solicita historia clínica por estos canales. Los resultados de
+        laboratorio no se almacenan ni se muestran aquí: se consultan
+        exclusivamente en el portal del laboratorio.
+      </p>
+
+      <h2 class="mt-12 text-xl font-semibold text-azul-700">
+        Marco legal
+      </h2>
+      <p class="mt-3 text-base text-gris-600">
+        El tratamiento se rige por la Ley 1581 de 2012 y sus decretos
+        reglamentarios. En Colombia el dato relativo a la salud es dato
+        sensible, lo que exige autorización previa, expresa e informada del
+        titular y limita su tratamiento a las finalidades autorizadas.
+      </p>
+
+      <h2 class="mt-12 text-xl font-semibold text-azul-700">
+        Derechos del titular
+      </h2>
+      <p class="mt-3 text-base text-gris-600">
+        Como titular de los datos usted puede conocer, actualizar y rectificar
+        sus datos, solicitar prueba de la autorización otorgada, ser informado
+        sobre el uso que se les ha dado, presentar quejas ante la
+        Superintendencia de Industria y Comercio y revocar la autorización o
+        solicitar la supresión de los datos cuando proceda.
+      </p>
+
+      <p class="mt-12 text-sm text-gris-500">
+        Para ejercer cualquiera de estos derechos, escriba a {contacto.correo}.
+      </p>
+    </article>
+  </main>
+
+  <PieDePagina />
+</Layout>

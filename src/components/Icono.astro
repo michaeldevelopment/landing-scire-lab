@@ -1,0 +1,29 @@
+---
+interface Props {
+  nombre: string;
+  class?: string;
+}
+
+const { nombre, class: clase = "size-6" } = Astro.props;
+
+const iconos = import.meta.glob<string>("../icons/*.svg", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+});
+
+const svg = iconos[`../icons/${nombre}.svg`];
+
+if (!svg) {
+  throw new Error(
+    `Icono "${nombre}" no existe en src/icons. Copialo desde @phosphor-icons/core/assets/regular.`,
+  );
+}
+
+const marcado = svg.replace(
+  "<svg",
+  `<svg class="${clase}" aria-hidden="true" focusable="false"`,
+);
+---
+
+<Fragment set:html={marcado} />

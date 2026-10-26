@@ -1,0 +1,105 @@
+---
+import Icono from "./Icono.astro";
+import { contacto, marca, portalResultados, sede } from "../datos";
+
+const anio = new Date().getFullYear();
+---
+
+<footer class="bg-azul-800 px-4 py-16 sm:px-6">
+  <div class="mx-auto max-w-6xl">
+    <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
+      <div>
+        <div class="flex items-center gap-2">
+          <Icono nombre="drop" class="size-5 shrink-0 text-rojo-400" />
+          <span class="flex flex-col leading-none">
+            <span class="text-base font-bold tracking-tight text-white">
+              Scire
+            </span>
+            <span
+              class="text-[0.5rem] font-semibold tracking-widest text-white/60 uppercase"
+            >
+              Clinical Diagnosis
+            </span>
+          </span>
+        </div>
+        <p class="mt-4 text-sm text-white/70">
+          {marca.nombre} S.A.S. Laboratorio clínico en {sede.ciudad},
+          {sede.departamento}.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-xs font-semibold tracking-widest text-white/50 uppercase">
+          La sede
+        </h2>
+        <address class="mt-4 flex flex-col gap-3 text-sm text-white/70">
+          <span class="flex items-start gap-2">
+            <Icono nombre="map-pin" class="mt-0.5 size-4 shrink-0" />
+            <span>
+              {sede.direccion}<br />
+              {sede.barrio}, {sede.ciudad}
+            </span>
+          </span>
+          <span class="flex items-start gap-2">
+            <Icono nombre="whatsapp-logo" class="mt-0.5 size-4 shrink-0" />
+            <span>WhatsApp {contacto.whatsappVisible}</span>
+          </span>
+          <span class="flex items-start gap-2">
+            <Icono nombre="envelope-simple" class="mt-0.5 size-4 shrink-0" />
+            <a
+              href={`mailto:${contacto.correo}`}
+              class="transicion-scire underline underline-offset-4 hover:text-white"
+            >
+              {contacto.correo}
+            </a>
+          </span>
+        </address>
+      </div>
+
+      <div>
+        <h2 class="text-xs font-semibold tracking-widest text-white/50 uppercase">
+          Enlaces
+        </h2>
+        <ul class="mt-4 flex flex-col gap-3 text-sm text-white/70">
+          <li>
+            <a
+              href={portalResultados}
+              rel="noopener"
+              class="transicion-scire flex items-center gap-2 hover:text-white"
+            >
+              <Icono nombre="file-arrow-down" class="size-4 shrink-0" />
+              Consultar resultados
+            </a>
+          </li>
+          <li>
+            <a
+              href={contacto.instagram}
+              rel="noopener"
+              class="transicion-scire flex items-center gap-2 hover:text-white"
+            >
+              <Icono nombre="instagram-logo" class="size-4 shrink-0" />
+              {contacto.instagramVisible}
+            </a>
+          </li>
+          <li>
+            <a
+              href="/privacidad"
+              class="transicion-scire hover:text-white"
+            >
+              Política de tratamiento de datos
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div
+      class="mt-12 flex flex-col gap-3 border-t border-white/10 pt-8 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>© {anio} {marca.nombre} S.A.S.</p>
+      <p>
+        Esta página no entrega información clínica ni interpreta resultados.
+      </p>
+    </div>
+  </div>
+</footer>

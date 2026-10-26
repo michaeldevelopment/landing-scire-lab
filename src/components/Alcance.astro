@@ -1,0 +1,86 @@
+---
+import { Picture } from "astro:assets";
+import Icono from "./Icono.astro";
+
+import profesional from "../assets/fotos/profesional.png";
+
+/*
+  Prueba social sobria. No hay testimonios, certificaciones, convenios
+  publicables ni cifras que el cliente haya confirmado, asi que no se inventan
+  ni se rellena el hueco con adornos.
+
+  La alianza genetica con el distribuidor de un laboratorio aleman queda fuera
+  por ahora: ni su vigencia ni la grafia del nombre estan confirmadas, y no hay
+  autorizacion escrita para usar la marca aliada. Es el respaldo mas fuerte que
+  tiene la linea de genetica, asi que vale la pena confirmarlo y traerlo aqui.
+  Ver memoria/alianza-centogene.md.
+*/
+
+const puntos = [
+  {
+    icono: "flask",
+    titulo: "Un solo laboratorio para todo el caso",
+    cuerpo:
+      "La misma sede que procesa un hemograma procesa paneles de genómica y de biología molecular. No hay que repartir el caso entre proveedores ni repetir la toma de muestra.",
+  },
+  {
+    icono: "dna",
+    titulo: "Lo especializado no es un añadido",
+    cuerpo:
+      "Genética, genómica, biología molecular, tamizaje prenatal y huella del ADN conviven con la rutina dentro del mismo portafolio, no como un servicio aparte que se tramita por fuera.",
+  },
+  {
+    icono: "microscope",
+    titulo: "Investigación y desarrollo",
+    cuerpo:
+      "El laboratorio mantiene línea de trabajo en cáncer, enfermedades infecciosas y resistencia antimicrobiana.",
+  },
+];
+---
+
+<section id="alcance" class="bg-azul-50 px-4 py-24 sm:px-6 sm:py-32">
+  <div class="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:items-center">
+    <div class="revelar">
+      <p class="mb-4 text-xs font-semibold tracking-widest text-azul-500 uppercase">
+        El laboratorio
+      </p>
+      <h2 class="titular-claro text-3xl font-semibold sm:text-4xl">
+        Lo que hay detrás del resultado
+      </h2>
+      <p class="mt-6 text-lg text-gris-600">
+        Scire Clinical Diagnosis es una entidad integral prestadora de servicios
+        de diagnóstico clínico en humanos en el oriente colombiano, con sede en
+        Cúcuta. Atiende a pacientes particulares y a instituciones con convenio.
+      </p>
+
+      <ul class="mt-10 flex flex-col gap-6">
+        {
+          puntos.map((punto) => (
+            <li class="flex gap-4">
+              <Icono
+                nombre={punto.icono}
+                class="mt-1 size-6 shrink-0 text-azul-500"
+              />
+              <div>
+                <h3 class="text-base font-semibold text-azul-700">
+                  {punto.titulo}
+                </h3>
+                <p class="mt-1 text-base text-gris-600">{punto.cuerpo}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <Picture
+      src={profesional}
+      alt="Profesional de laboratorio con bata blanca, retrato sobre fondo liso"
+      formats={["avif", "webp"]}
+      widths={[480, 768, 1024]}
+      sizes="(min-width: 1024px) 50vw, 100vw"
+      loading="lazy"
+      class="revelar aspect-[3/4] w-full rounded-2xl border border-gris-200 object-cover"
+    />
+  </div>
+</section>

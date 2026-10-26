@@ -1,0 +1,34 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Encabezado from "../components/Encabezado.astro";
+import MundoScroll from "../components/MundoScroll.astro";
+import RevelacionLema from "../components/RevelacionLema.astro";
+import Servicios from "../components/Servicios.astro";
+import ComoFunciona from "../components/ComoFunciona.astro";
+import Rutas from "../components/Rutas.astro";
+import Alcance from "../components/Alcance.astro";
+import Faq from "../components/Faq.astro";
+import Cierre from "../components/Cierre.astro";
+import PieDePagina from "../components/PieDePagina.astro";
+---
+
+<Layout
+  titulo="Laboratorio clínico en Cúcuta | Scire Clinical Diagnosis"
+  descripcion="Análisis clínico, biología molecular, genética y genómica, tamizaje prenatal, huella del ADN y toma domiciliaria en Cúcuta. Agende por WhatsApp."
+>
+  <Encabezado />
+
+  <main id="contenido">
+    <MundoScroll />
+
+    <RevelacionLema />
+    <Servicios />
+    <ComoFunciona />
+    <Rutas />
+    <Alcance />
+    <Faq />
+    <Cierre />
+  </main>
+
+  <PieDePagina />
+</Layout>

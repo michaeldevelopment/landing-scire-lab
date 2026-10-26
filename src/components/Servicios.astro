@@ -1,0 +1,120 @@
+---
+import Icono from "./Icono.astro";
+import { enlaceWhatsapp } from "../datos";
+
+/*
+  Las seis lineas son las que el laboratorio publica de verdad, con las pruebas
+  que nombra su propio sitio. No se agregan examenes que no esten declarados, y
+  no se publica precio ni tiempo de entrega porque ninguno esta confirmado: el
+  CTA de cada tarjeta lleva esa pregunta a WhatsApp.
+
+  Cuidado con el tono en VPH y en las de transmision sexual: son temas
+  sensibles para quien los busca. Se nombran y se explican, sin alarmismo.
+*/
+
+const lineas = [
+  {
+    icono: "test-tube",
+    titulo: "Análisis clínico",
+    cuerpo:
+      "El examen de rutina, el que pide la mayoría de órdenes médicas, organizado en cinco áreas.",
+    detalle:
+      "Bioquímica clínica. Hematología y coagulación. Inmunología y hormonas. Microbiología. Uroanálisis y microscopía.",
+    mensaje: "Hola. Necesito un examen de análisis clínico.",
+  },
+  {
+    icono: "virus",
+    titulo: "Biología molecular",
+    cuerpo:
+      "Detección por PCR multiplex y chip macroarray, con resultados que distinguen el agente y su resistencia.",
+    detalle:
+      "Paneles Flow Chip para VPH con genotipificación, sepsis, resistencia antimicrobiana, infecciones de transmisión sexual y sistema nervioso central. Septina 9 para detección precoz de cáncer colorrectal.",
+    mensaje: "Hola. Quiero información sobre un examen de biología molecular.",
+  },
+  {
+    icono: "dna",
+    titulo: "Genética y genómica",
+    cuerpo:
+      "Paneles por secuenciación para riesgo oncológico y para decisiones de tratamiento.",
+    detalle:
+      "CentoCancer Panel sobre 31 genes. Panel BRCA1 y BRCA2. Oncotype de mama y Oncotype de colon.",
+    mensaje: "Hola. Quiero información sobre un panel genético.",
+  },
+  {
+    icono: "baby",
+    titulo: "Tamizaje prenatal",
+    cuerpo:
+      "Tamizaje de primer trimestre, una alternativa menos invasiva al cariotipo fetal.",
+    detalle:
+      "PAPP-A y β-hCG libre entre las semanas 9 y 13, combinado con ecografía de pliegue nucal y hueso nasal para estimar riesgo de trisomía 21 y 18.",
+    mensaje: "Hola. Quiero información sobre el tamizaje prenatal.",
+  },
+  {
+    icono: "fingerprint",
+    titulo: "Huella del ADN y paternidad",
+    cuerpo:
+      "Para confirmar un vínculo biológico, con modalidades según quién pueda participar.",
+    detalle:
+      "Padre, madre e hijo. Padre e hijo sin la madre. Abuelismo, con los abuelos paternos. Y a partir de restos óseos.",
+    mensaje: "Hola. Quiero información sobre una prueba de paternidad.",
+  },
+  {
+    icono: "house",
+    titulo: "Toma de muestras domiciliarias",
+    cuerpo:
+      "Personal asistencial se desplaza al lugar que usted indique y toma la muestra allí.",
+    detalle:
+      "Útil cuando desplazarse es difícil, cuando se trata de un adulto mayor o cuando el asunto es delicado.",
+    mensaje: "Hola. Quiero solicitar una toma de muestra domiciliaria.",
+  },
+];
+---
+
+<section id="servicios" class="bg-white px-4 py-24 sm:px-6 sm:py-32">
+  <div class="mx-auto max-w-6xl">
+    <div class="revelar mx-auto max-w-[680px]">
+      <p class="mb-4 text-xs font-semibold tracking-widest text-azul-500 uppercase">
+        Portafolio
+      </p>
+      <h2 class="titular-claro text-3xl font-semibold sm:text-4xl">
+        Seis líneas, un solo laboratorio
+      </h2>
+      <p class="mt-6 text-lg text-gris-600">
+        La mayoría de laboratorios de la región resuelven la rutina y remiten lo
+        demás. Scire procesa las dos cosas, y eso cambia a quién tiene que
+        llamar usted cuando el examen se complica.
+      </p>
+    </div>
+
+    <ul class="mt-16 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {
+        lineas.map((linea) => (
+          <li class="revelar flex flex-col rounded-2xl border border-gris-200 bg-azul-50 p-6">
+            <Icono nombre={linea.icono} class="size-8 shrink-0 text-azul-500" />
+
+            <h3 class="mt-6 text-xl font-semibold text-azul-700">
+              {linea.titulo}
+            </h3>
+            <p class="mt-3 text-base text-gris-600">{linea.cuerpo}</p>
+            <p class="mt-4 grow text-sm text-gris-500">{linea.detalle}</p>
+
+            <a
+              href={enlaceWhatsapp(linea.mensaje)}
+              rel="noopener"
+              class="transicion-scire mt-6 flex w-max items-center gap-2 rounded-lg px-1 py-1 text-base font-semibold text-rojo-500 hover:text-rojo-600"
+            >
+              Consultar
+              <Icono nombre="arrow-right" class="size-4 shrink-0" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="revelar mt-8 max-w-[680px] text-sm text-gris-500">
+      Algunos exámenes especializados se remiten a la red de referencia
+      nacional. Si el suyo es uno de esos, se lo decimos al agendar, junto con
+      la preparación que necesita.
+    </p>
+  </div>
+</section>

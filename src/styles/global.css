@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+/* Tokens de docs/LINEA-GRAFICA.md. Los contrastes de los comentarios estan
+   calculados sobre blanco, no estimados. */
+@theme {
+  --font-sans: "Manrope Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+
+  /* Rojo Scire: color de accion y de marca */
+  --color-rojo-50: #faf5f5;
+  --color-rojo-100: #f4e7e7;
+  --color-rojo-200: #ecc6c7;
+  --color-rojo-300: #de9c9e;
+  --color-rojo-400: #dd555a;
+  --color-rojo-500: #ac2328; /* 6.94 AA */
+  --color-rojo-600: #8c1c21;
+  --color-rojo-700: #6e161a;
+  --color-rojo-800: #551114;
+  --color-rojo-900: #3b0c0e;
+
+  /* Azul Scire: color de estructura y confianza */
+  --color-azul-50: #f6f7f8;
+  --color-azul-100: #ebecf0;
+  --color-azul-200: #d2d6e0;
+  --color-azul-300: #b0b9c9;
+  --color-azul-400: #8091b2;
+  --color-azul-500: #506285; /* 6.13 AA */
+  --color-azul-600: #3f4d69;
+  --color-azul-700: #323d53;
+  --color-azul-800: #262f40;
+  --color-azul-900: #1b212d;
+
+  /* Neutros */
+  --color-gris-50: #f8f9fa;
+  --color-gris-100: #f1f2f4;
+  --color-gris-200: #e3e5ea;
+  --color-gris-500: #5f6672; /* 5.78 AA */
+  --color-gris-600: #4b5260; /* 7.85 AAA */
+  --color-gris-900: #1c1f26; /* 16.49 AAA */
+
+  /* Estados. Nunca van solos: siempre con icono y palabra. */
+  --color-estado-lista: #16713f;
+  --color-estado-lista-fondo: #eaf5ee;
+  --color-estado-proceso: #506285;
+  --color-estado-proceso-fondo: #ebecf0;
+  --color-estado-remitida: #8a5a00;
+  --color-estado-remitida-fondo: #fbf3e2;
+
+  --ease-scire: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: #ffffff;
+    color: var(--color-gris-900);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    font-synthesis-style: none;
+  }
+
+  /* La itálica de Scire vive dentro del logo, que es un activo de imagen.
+     En la interfaz no hay cursivas. */
+  i,
+  em,
+  cite,
+  address {
+    font-style: normal;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p,
+  li {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-azul-600);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  /* Degradado unicamente sobre el texto del titular del heroe. Jamas en un
+     fondo. El heroe se dibuja sobre el video, que es un contexto oscuro. */
+  .titular-heroe {
+    background-image: linear-gradient(to right, #ffffff, #9b9b9b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .titular-claro {
+    background-image: linear-gradient(to right, #000000, #666666);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .transicion-scire {
+    transition: all 700ms var(--ease-scire);
+  }
+
+  /* Entrada en viewport. La clase .visible la pone IntersectionObserver. */
+  .revelar {
+    opacity: 0;
+    transform: translateY(64px);
+    filter: blur(12px);
+    transition:
+      opacity 800ms var(--ease-scire),
+      transform 800ms var(--ease-scire),
+      filter 800ms var(--ease-scire);
+  }
+
+  .revelar.visible {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .revelar {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
