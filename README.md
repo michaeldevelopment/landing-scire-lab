@@ -19,7 +19,7 @@ scrub son unas 120 líneas dentro de `MundoScroll.astro`.
 
 ## Despliegue en GitHub Pages
 
-Se publica en **https://michaeldevelopment.github.io/landing-scia-lab/** desde
+Se publica en **https://michaeldevelopment.github.io/landing-scire-lab/** desde
 la rama `main`. Cada push dispara `.github/workflows/deploy.yml`, que construye
 con la acción oficial de Astro y publica el resultado.
 
@@ -29,7 +29,7 @@ publica.
 
 ### La trampa del `base`
 
-El sitio no vive en la raíz del dominio sino en `/landing-scia-lab/`. Eso está
+El sitio no vive en la raíz del dominio sino en `/landing-scire-lab/`. Eso está
 configurado en `astro.config.mjs` con `site` y `base`, y tiene una consecuencia
 que es fácil olvidar:
 

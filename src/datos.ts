@@ -12,15 +12,15 @@
  * Prefija una ruta interna con el `base` del sitio.
  *
  * Hace falta porque GitHub Pages publica el proyecto en un subdirectorio
- * (/landing-scia-lab/), no en la raiz del dominio. Una ruta absoluta escrita a
+ * (/landing-scire-lab/), no en la raiz del dominio. Una ruta absoluta escrita a
  * mano como "/video/adn-1.mp4" apuntaria fuera del sitio y daria 404.
  *
  * Usala para TODO lo interno: paginas, favicon, video, cualquier cosa de
  * public/. No aplica a enlaces externos ni a los assets que importa Astro
  * (esos ya salen con el prefijo puesto).
  *
- *   ruta("privacidad")       ->  /landing-scia-lab/privacidad
- *   ruta("/video/adn-1.mp4") ->  /landing-scia-lab/video/adn-1.mp4
+ *   ruta("privacidad")       ->  /landing-scire-lab/privacidad
+ *   ruta("/video/adn-1.mp4") ->  /landing-scire-lab/video/adn-1.mp4
  */
 export function ruta(camino = "") {
   return `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${camino.replace(/^\//, "")}`;
@@ -51,7 +51,7 @@ export const contacto = {
   aqui. Ver memoria/sistema-interno-y-portal-de-resultados.md.
 */
 export const portalResultados =
-  "https://michaeldevelopment.github.io/app-scia-lab/";
+  "https://michaeldevelopment.github.io/app-scire-lab/";
 
 export function enlaceWhatsapp(mensaje: string) {
   return `https://wa.me/${contacto.whatsapp}?text=${encodeURIComponent(mensaje)}`;
