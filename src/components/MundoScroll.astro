@@ -167,7 +167,15 @@ const clips = paradas.map((p) => ruta(p.clip));
   <div class="md:hidden">
     {
       paradas.map((parada, i) => (
-        <section class="relative isolate flex min-h-svh items-center overflow-hidden px-4 pt-24 pb-12">
+        <section
+          class:list={[
+            "relative isolate flex items-center overflow-hidden px-4",
+            // Solo el heroe ocupa la pantalla. Las otras dos son secciones
+            // normales, altas como su contenido: el telefono scrollea seccion
+            // a seccion, no pantalla a pantalla.
+            i === 0 ? "min-h-svh pt-24 pb-12" : "py-20",
+          ]}
+        >
           <Picture
             src={parada.still}
             alt=""
