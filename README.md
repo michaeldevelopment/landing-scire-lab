@@ -151,6 +151,14 @@ que vale de ese motor es la mecánica, y es lo que está en `MundoScroll.astro`:
    encola búsquedas y congela el clip.
 3. **Cebado de iOS.** Safari no pinta un fotograma buscado en un video muteado
    que nunca se reprodujo; se ceba con play/pause al primer gesto.
+
+   **Del formato se fía solo cuando dice `"probably"`.** `canPlayType` para VP9
+   devuelve `"maybe"` en Safari de iOS, incluso en equipos que después no lo
+   decodifican, y `"maybe"` es una cadena con valor de verdad. El iPhone se
+   descargaba el `.webm`, el video moría en silencio y la escena se quedaba
+   congelada en su keyframe: ese era el fallo de móvil. Ahora el webm se sirve
+   solo con `"probably"`, y un listener de `error` en el `<video>` reintenta
+   una vez con mp4 por si falla igual.
 4. **El keyframe es el póster** hasta que el clip pinta su primer fotograma.
    Como cada keyframe es el fotograma inicial de su clip, el relevo no se nota.
 5. **Crossfade en las costuras**, que cubre la deriva del lado de salida.

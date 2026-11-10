@@ -81,7 +81,13 @@ const clips = paradas.map((p) => ruta(p.clip));
     texto acaba viendose casi siempre: las dos cosas se contradicen.
   */}
   <div class="absolute inset-0">
-    <div class="sticky top-0 h-screen">
+    {/*
+      svh y no vh: en el telefono 100vh es la altura CON la barra de URL
+      escondida, asi que la capa fija queda mas alta que lo que se ve y el
+      heroe, centrado dentro de ella, se corta por abajo. svh es la altura en
+      el peor caso, con la barra puesta, y ahi siempre cabe.
+    */}
+    <div class="sticky top-0 h-svh">
       {/* El video se recorta aqui; el texto va fuera para que nunca se corte. */}
       <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
         {
@@ -295,10 +301,15 @@ const clips = paradas.map((p) => ruta(p.clip));
     }));
 
     // Un solo formato por navegador: con carga por Blob no sirve <source>.
+    // Safari en iOS contesta "maybe" a VP9 en equipos que luego no lo
+    // decodifican, y "maybe" es una cadena con valor de verdad: el iPhone se
+    // descargaba el webm, el video moria en silencio y la escena se quedaba
+    // en su keyframe. Solo "probably" es una respuesta fiable.
     const sonda = document.createElement("video");
-    const extension = sonda.canPlayType('video/webm; codecs="vp9"')
-      ? "webm"
-      : "mp4";
+    const preferido =
+      sonda.canPlayType('video/webm; codecs="vp9"') === "probably"
+        ? "webm"
+        : "mp4";
 
     let gestoListo = false;
 
@@ -316,7 +327,7 @@ const clips = paradas.map((p) => ruta(p.clip));
       } catch {}
     }
 
-    function cargar(s: Escena, base: string) {
+    function cargar(s: Escena, base: string, extension = preferido) {
       // Con movimiento reducido no se descarga ningun clip: los keyframes se
       // quedan y solo se funden entre si. Cero coste de decodificacion.
       if (reducido || s.cargando || !base) return;
@@ -350,12 +361,23 @@ const clips = paradas.map((p) => ruta(p.clip));
             } catch {}
             if (gestoListo) cebar(v);
           });
+          // Red de seguridad: si el navegador acepto el formato y despues no
+          // pudo decodificarlo, se reintenta una vez con mp4. Sin esto la
+          // escena se queda muda en su keyframe y no hay forma de saberlo.
+          v.addEventListener("error", () => {
+            v.remove();
+            s.video = null;
+            s.lista = false;
+            s.cargando = false;
+            if (extension !== "mp4") cargar(s, base, "mp4");
+          });
 
           s.el.appendChild(v);
           s.video = v;
         })
         .catch(() => {
           s.cargando = false;
+          if (extension !== "mp4") cargar(s, base, "mp4");
         });
     }
 
