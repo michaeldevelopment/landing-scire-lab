@@ -13,29 +13,35 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 jobs:
-  construir:
+  construir-y-desplegar:
     runs-on: ubuntu-latest
     steps:
       - name: Clonar el repositorio
         uses: actions/checkout@v7
 
-      - name: Instalar, construir y subir el sitio
-        uses: withastro/action@v6
-        # El gestor de paquetes se detecta por el lockfile (pnpm-lock.yaml).
-        # La version de Node sale de "engines" en package.json.
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@v4
 
-  desplegar:
-    needs: construir
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Publicar en GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
+      - name: Instalar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: pnpm
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Construir el sitio
+        run: pnpm build
+
+      # GitHub Pages esta configurado como "Deploy from a branch", no
+      # "GitHub Actions": por eso publicamos el contenido ya construido
+      # (dist/) en la rama gh-pages en vez de usar actions/deploy-pages.
+      - name: Publicar dist/ en la rama gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist

@@ -1,0 +1,68 @@
+---
+import Icono from "./Icono.astro";
+import { ctaPrincipal } from "../datos";
+
+/*
+  La copia de una parada del recorrido. Vive aparte porque se pinta dos veces:
+  en la capa pegajosa del mundo por scroll (escritorio) y en la seccion normal
+  equivalente (telefono). Ver MundoScroll.astro.
+*/
+
+interface Props {
+  etiqueta: string;
+  titulo: string | null;
+  cuerpo: string | null;
+  indice: number;
+}
+
+const { etiqueta, titulo, cuerpo, indice } = Astro.props;
+---
+
+<div class="mx-auto w-full max-w-[680px]">
+  <p class="mb-4 text-xs font-semibold tracking-widest text-white/75 uppercase">
+    {etiqueta}
+  </p>
+
+  {
+    indice === 0 ? (
+      <>
+        <h1 class="titular-heroe text-4xl font-bold sm:text-5xl">
+          Del hemograma al panel genético,<br />sin cambiar de laboratorio
+        </h1>
+
+        <p class="mt-6 text-lg text-white/90">
+          Scire resuelve el análisis clínico de rutina y también lo
+          especializado: biología molecular, genética y genómica, tamizaje
+          prenatal y huella del ADN. Todo desde una sede en Cúcuta.
+        </p>
+
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <a
+            href={ctaPrincipal.href}
+            rel="noopener"
+            class="transicion-scire flex shrink-0 items-center justify-center gap-2 rounded-full bg-rojo-500 px-3 py-2 text-base font-semibold whitespace-nowrap text-white hover:bg-rojo-600 active:scale-98 sm:w-max"
+          >
+            <Icono nombre="whatsapp-logo" class="size-5 shrink-0" />
+            {ctaPrincipal.texto}
+          </a>
+          <p class="text-sm text-white/80">
+            Le confirmamos la preparación y qué muestra hace falta antes de que
+            se desplace.
+          </p>
+        </div>
+
+        <p class="mt-12 flex items-center gap-2 text-sm text-white/85">
+          <Icono nombre="flask" class="size-4 shrink-0" />
+          Atención a pacientes particulares y a instituciones con convenio.
+        </p>
+      </>
+    ) : (
+      <>
+        <h2 class="titular-heroe text-3xl font-semibold sm:text-4xl">
+          {titulo}
+        </h2>
+        <p class="mt-6 text-lg text-white/90">{cuerpo}</p>
+      </>
+    )
+  }
+</div>

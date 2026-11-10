@@ -1,7 +1,7 @@
 ---
 import { Picture } from "astro:assets";
-import Icono from "./Icono.astro";
-import { ctaPrincipal, ruta } from "../datos";
+import ParadaCopia from "./ParadaCopia.astro";
+import { ruta } from "../datos";
 
 import helice from "../assets/adn/1-helice.png";
 import anguloBajo from "../assets/adn/2-angulo-bajo.png";
@@ -34,6 +34,12 @@ import detalle from "../assets/adn/3-detalle.png";
        cada costura tiene una deriva pequena que el crossfade cubre.
 
   Cada parada tiene su propio clip: no hace falta concatenarlos.
+
+  En TELEFONO no hay mundo por scroll. La misma copia se pinta en tres
+  secciones normales, independientes, con el keyframe de fondo y la transicion
+  .revelar del Layout. El motor no arranca, asi que el telefono no descarga ni
+  decodifica un solo clip: eran ~6 MB de video y tres decodificaciones en
+  paralelo conducidas por el dedo, el peor caso de esta pagina.
 */
 
 const paradas = [
@@ -80,7 +86,7 @@ const clips = paradas.map((p) => ruta(p.clip));
     sin nada en pantalla la curva de opacidad tiene que ser tan ancha que el
     texto acaba viendose casi siempre: las dos cosas se contradicen.
   */}
-  <div class="absolute inset-0">
+  <div class="absolute inset-0 max-md:hidden">
     {/*
       svh y no vh: en el telefono 100vh es la altura CON la barra de URL
       escondida, asi que la capa fija queda mas alta que lo que se ve y el
@@ -131,55 +137,12 @@ const clips = paradas.map((p) => ruta(p.clip));
               class="absolute inset-0 flex items-center px-4 pt-24 pb-8 sm:px-6 sm:pt-28 sm:pb-12"
               style={`opacity:${i === 0 ? 1 : 0}`}
             >
-              <div class="mx-auto w-full max-w-[680px]">
-                <p class="mb-4 text-xs font-semibold tracking-widest text-white/75 uppercase">
-                  {parada.etiqueta}
-                </p>
-
-                {i === 0 ? (
-                  <>
-                    <h1 class="titular-heroe text-4xl font-bold sm:text-5xl">
-                      Del hemograma al panel genético,<br />sin cambiar de
-                      laboratorio
-                    </h1>
-
-                    <p class="mt-6 text-lg text-white/90">
-                      Scire resuelve el análisis clínico de rutina y también lo
-                      especializado: biología molecular, genética y genómica,
-                      tamizaje prenatal y huella del ADN. Todo desde una sede en
-                      Cúcuta.
-                    </p>
-
-                    <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-                      <a
-                        href={ctaPrincipal.href}
-                        rel="noopener"
-                        class="transicion-scire flex shrink-0 items-center justify-center gap-2 rounded-full bg-rojo-500 px-3 py-2 text-base font-semibold whitespace-nowrap text-white hover:bg-rojo-600 active:scale-98 sm:w-max"
-                      >
-                        <Icono nombre="whatsapp-logo" class="size-5 shrink-0" />
-                        {ctaPrincipal.texto}
-                      </a>
-                      <p class="text-sm text-white/80">
-                        Le confirmamos la preparación y qué muestra hace falta
-                        antes de que se desplace.
-                      </p>
-                    </div>
-
-                    <p class="mt-12 flex items-center gap-2 text-sm text-white/85">
-                      <Icono nombre="flask" class="size-4 shrink-0" />
-                      Atención a pacientes particulares y a instituciones con
-                      convenio.
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <h2 class="titular-heroe text-3xl font-semibold sm:text-4xl">
-                      {parada.titulo}
-                    </h2>
-                    <p class="mt-6 text-lg text-white/90">{parada.cuerpo}</p>
-                  </>
-                )}
-              </div>
+              <ParadaCopia
+                etiqueta={parada.etiqueta}
+                titulo={parada.titulo}
+                cuerpo={parada.cuerpo}
+                indice={i}
+              />
             </div>
           ))
         }
@@ -191,8 +154,44 @@ const clips = paradas.map((p) => ruta(p.clip));
     Espaciadores. Solo existen para dar distancia de scroll: una pantalla por
     parada. El contenido visible vive en la capa pegajosa de arriba.
   */}
-  <div class="relative">
+  <div class="relative max-md:hidden">
     {paradas.map(() => <div data-parada class="h-screen" aria-hidden="true" />)}
+  </div>
+
+  {/*
+    Telefono: una seccion por parada, independiente y en flujo normal. Sin
+    pegajoso, sin espaciadores y sin video. La transicion es .revelar del
+    Layout, que ya tiene su IntersectionObserver y su caso de movimiento
+    reducido; el heroe queda fuera porque tiene que estar legible al cargar.
+  */}
+  <div class="md:hidden">
+    {
+      paradas.map((parada, i) => (
+        <section class="relative isolate flex min-h-svh items-center overflow-hidden px-4 pt-24 pb-12">
+          <Picture
+            src={parada.still}
+            alt=""
+            formats={["avif", "webp"]}
+            widths={[640, 1024, 1536]}
+            sizes="100vw"
+            loading={i === 0 ? "eager" : "lazy"}
+            class="absolute inset-0 -z-20 h-full w-full object-cover"
+          />
+
+          {/* Mismo velo plano que en escritorio (LINEA-GRAFICA seccion 4). */}
+          <div class="absolute inset-0 -z-10 bg-black/70" aria-hidden="true" />
+
+          <div class={i === 0 ? "w-full" : "revelar w-full"}>
+            <ParadaCopia
+              etiqueta={parada.etiqueta}
+              titulo={parada.titulo}
+              cuerpo={parada.cuerpo}
+              indice={i}
+            />
+          </div>
+        </section>
+      ))
+    }
   </div>
 </section>
 
@@ -231,7 +230,15 @@ const clips = paradas.map((p) => ruta(p.clip));
 <script>
   const seccion = document.querySelector<HTMLElement>("[data-mundo-scroll]");
 
-  if (seccion) {
+  // El mundo por scroll es solo de escritorio: en telefono la seccion es HTML
+  // normal y no hay clips que conducir. Mismo corte que `max-md:hidden` en el
+  // markup, que en Tailwind v4 son los 768px por defecto.
+  // shortcut: se decide una vez al cargar, asi que redimensionar la ventana
+  // cruzando 768px no conmuta el motor hasta recargar; pasar a un listener de
+  // matchMedia si eso llega a molestar en escritorio.
+  const escritorio = window.matchMedia("(min-width: 768px)").matches;
+
+  if (seccion && escritorio) {
     const clips: string[] = JSON.parse(seccion.dataset.clips || "[]");
     const escenas = [...seccion.querySelectorAll<HTMLElement>("[data-escena]")];
     const bloques = [...seccion.querySelectorAll<HTMLElement>("[data-parada]")];
