@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "publicar": "astro build && node scripts/publicar.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "video": "node scripts/optimizar-video.mjs"

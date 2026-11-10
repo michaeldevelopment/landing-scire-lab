@@ -1,4 +1,4 @@
-# build output
+# build output (intermedio: scripts/publicar.mjs lo copia a la raiz)
 dist/
 # generated types
 .astro/
